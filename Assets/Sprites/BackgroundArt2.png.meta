@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 09c21d70bfa078142aa819bda3241ffb
+guid: 1a484772be6b23d40af6a847c982d371
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9127031645007531461
-    second: StartButtonHighlightedSprite_0
+      213: -5165928523401191232
+    second: BackgroundArt2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: StartButtonHighlightedSprite_0
+      name: BackgroundArt2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 16
+        width: 480
+        height: 480
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b32b3917315465180800000000000000
-      internalID: -9127031645007531461
+      spriteID: 0c02d93d06fee48b0800000000000000
+      internalID: -5165928523401191232
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      StartButtonHighlightedSprite_0: -9127031645007531461
+      BackgroundArt2_0: -5165928523401191232
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
