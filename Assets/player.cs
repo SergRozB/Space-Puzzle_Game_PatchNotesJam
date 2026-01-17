@@ -1,15 +1,13 @@
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class player : MonoBehaviour
 {
-
-    bool isMoving = false;
-    public float speed = 100.0f;
-    public bool canJump = true;
-    public TMPro.TextMeshProUGUI scoreText;
-
+    bool inProgress = true;
+    private Inventory inventory;
+    List<Planet> planets = new List<Planet>.list();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,8 +17,24 @@ public class player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        for (int i = 0; i < planets.Count; i++)
+        {
+            Vector2 force = getGravityVector(planets[i]);
+            player.transform.position(force);
+        }
     }
+
+    /*
+    Vector2 getGravityVector(Planet planet)
+    {
+        int distance = sqrt(abs(planet.getx() - player.getx()) ** 2 + (abs(planet.gety() - player.gety()) **2)
+        int totalForce = planet.getMass() / distance^2
+        Vector2 force = new Vector2((planet.getx() - player.getx()) * gravityForce, (planet.getx() - player.getx()) * gravityForce)
+        return force
+    }
+    */
+
+
 
     void FixedUpdate()
     {
@@ -30,63 +44,22 @@ public class player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "flor")
+        if (collision.gameObject.tag == "planet")
         {
-            Debug.Log("Collided with floor");
-            canJump = true;
+            Debug.Log("Collided with planet");
+            inProgress = false;
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "flor")
+        if (collision.gameObject.tag == "item")
         {
-            canJump = false;
-        }
-
-        if (collision.gameObject.tag == "coin")
-        {
-            destroyCoin(collision.gameObject);
+            // get item;
         }
     }
 
-    void destroyCoin(GameObject coin) { 
-        Destroy(coin);
-    }
-
-    Vector2 MovementFunc() 
-    {
-        Vector2 direction = Vector3.zero;
-        if (Keyboard.current.spaceKey.isPressed)
-        {
-            if (canJump) {
-                direction.y = 1;
-            }
-        }
-        if (Keyboard.current.aKey.isPressed)
-        {
-            direction.x = -1;
-        }
-        if (Keyboard.current.dKey.isPressed)
-        {
-            direction.x = 1;
-        }
-        if (Keyboard.current.sKey.isPressed)
-        {
-            direction.y = -1;
-        }
-
-        if (direction.magnitude > 0)
-        {
-            direction = direction.normalized;
-            direction *= speed;
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
-        }
-
-        return direction;
+    void destroyCoin(GameObject item) { 
+        Destroy(item);
     }
 }

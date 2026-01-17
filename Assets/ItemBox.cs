@@ -1,10 +1,12 @@
 using UnityEngine;
 using Unity.UI;
+using JetBrains.Annotations;
 
-public class coinScript : MonoBehaviour
+public class itemBox : MonoBehaviour
 {
     private player playerScript;
-    public static int score;
+    private inventory inventory;
+    private item item;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,7 +24,7 @@ public class coinScript : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Destroy(this.gameObject);
-            score += 1;
+            inventory.add(this.item);
             playerScript = collision.GetComponent<player>();
             playerScript.scoreText.text = score.ToString();
 
