@@ -3,7 +3,12 @@ using Unity.UI;
 using JetBrains.Annotations;
 using System.Collections.Generic;
 
-public class inventory : MonoBehaviour
+public class Inventory : MonoBehaviour
 {
-    private List<Item> inventory = new List<Item>;
+    private List<GameObject> inventory = new List<GameObject>(){};
+
+    public void addItem(GameObject item)
+    {
+        inventory.Add(item);
+    }
 }

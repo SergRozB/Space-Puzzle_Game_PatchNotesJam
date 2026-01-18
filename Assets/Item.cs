@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using System.Collections.Generic;
 using System;
 
-public class item : MonoBehaviour
+public class Item : MonoBehaviour
 {
     private string name;
     private string function;

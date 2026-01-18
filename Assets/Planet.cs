@@ -1,15 +1,12 @@
+using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class player : MonoBehaviour
+public class Planet : MonoBehaviour
 {
 
-    bool isMoving = false;
-    public float speed = 100.0f;
-    public bool canJump = true;
-    public TMPro.TextMeshProUGUI scoreText;
-
+    [SerializeField] private double mass = 1.5;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,71 +19,18 @@ public class player : MonoBehaviour
         
     }
 
-    void FixedUpdate()
+    public double getMass()
     {
-        Vector2 movement = MovementFunc();
-        transform.Translate(new Vector2(movement.x, movement.y));
+        return this.mass;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    public double getX()
     {
-        if (collision.gameObject.tag == "flor")
-        {
-            Debug.Log("Collided with floor");
-            canJump = true;
-        }
+        return transform.position.x;
     }
 
-    void OnCollisionExit2D(Collision2D collision)
+    public double getY()
     {
-        if (collision.gameObject.tag == "flor")
-        {
-            canJump = false;
-        }
-
-        if (collision.gameObject.tag == "coin")
-        {
-            destroyCoin(collision.gameObject);
-        }
-    }
-
-    void destroyCoin(GameObject coin) { 
-        Destroy(coin);
-    }
-
-    Vector2 MovementFunc() 
-    {
-        Vector2 direction = Vector3.zero;
-        if (Keyboard.current.spaceKey.isPressed)
-        {
-            if (canJump) {
-                direction.y = 1;
-            }
-        }
-        if (Keyboard.current.aKey.isPressed)
-        {
-            direction.x = -1;
-        }
-        if (Keyboard.current.dKey.isPressed)
-        {
-            direction.x = 1;
-        }
-        if (Keyboard.current.sKey.isPressed)
-        {
-            direction.y = -1;
-        }
-
-        if (direction.magnitude > 0)
-        {
-            direction = direction.normalized;
-            direction *= speed;
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
-        }
-
-        return direction;
+        return transform.position.y;
     }
 }
