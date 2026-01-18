@@ -13,7 +13,7 @@ public class ResizeBackground : MonoBehaviour
         {
             if (t.name != gameObject.name) 
             {
-                Debug.Log("Resizing background element: " + t.name);
+                //Debug.Log("Resizing background element: " + t.name);
                 t.sizeDelta *= canvasScaleFactor;
             }
         }
