@@ -25,19 +25,31 @@ public class Player : MonoBehaviour
     [SerializeField] float exponent = 2.8f;
     Mouse mouse = Mouse.current;
     public List<Planet> planets = new List<Planet>{};
+    [SerializeField] public float projectionVel = 0.5f;
+    public bool fireRequest = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
     }
 
+    void Update()
+    {
+        if (mouse.leftButton.wasPressedThisFrame)
+        {    
+            fireRequest = true;
+        }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
+        mousePos = mouse.position.ReadValue();
         if (fired != true)
         {   
-            if (mouse.leftButton.wasPressedThisFrame)
+            if (fireRequest)
             {
+                fireRequest = false;
                 fired = true;
+                forwardVel = getVel(transform.position, mouseToWorld()) * projectionVel;
 
             } else {               
                 if (mouse.position.ReadValue() != prevMousePos) {
@@ -49,27 +61,33 @@ public class Player : MonoBehaviour
                 }
             }
         } else {
-            mousePos = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
-            forwardVel = getVel(transform.position, mousePos);
             updatePlayer();
         }
 
-        prevMousePos = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
+        prevMousePos = mousePos;
+    }
+
+    Vector3 mouseToWorld()
+    {
+        Vector3 m = mousePos;
+        m.z = Camera.main.WorldToScreenPoint(transform.position).z;
+        return Camera.main.ScreenToWorldPoint(m);
     }
 
     Vector3 getVel(Vector3 prevVel, Vector3 newVel)
     {
         Vector3 v = newVel - prevVel;
-        return v;
+        return v.normalized;
     }
     void updateTrajectory()
     {
         Vector3 position = transform.position;
-        mousePos = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
+        Vector3 trajVel = forwardVel;
+        Vector3 mouseWorldPos = mouseToWorld();
 
-        forwardVel = getVel(transform.position, mousePos);
+        forwardVel = getVel(transform.position, mouseWorldPos) * projectionVel;
 
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 40; i++) {
             prevPostition = position;
 
             for (int j = 0; j < planets.Count; j++)
@@ -78,10 +96,10 @@ public class Player : MonoBehaviour
                 position += new Vector3 (force.x, force.y, 0);
             }
 
-            position += forwardVel;
-            forwardVel = getVel(prevPostition, position) * friction;
+            position += trajVel;
+            trajVel = getVel(prevPostition, position) * friction;
 
-            if (i % 6 == 0)
+            if (i % 4 == 0)
             {
                 GameObject trajObject = Instantiate(trajectoryPosition, position, transform.rotation);
                 trajObjects.Add(trajObject);
