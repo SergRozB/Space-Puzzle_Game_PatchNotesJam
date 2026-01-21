@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using Unity.Mathematics;
-using System;
 using System.IO;
+using UnityEngine.UI;
 
 
 public class Player : MonoBehaviour
@@ -25,11 +25,19 @@ public class Player : MonoBehaviour
     [SerializeField] float exponent = 2.8f;
     Mouse mouse = Mouse.current;
     public List<Planet> planets = new List<Planet>{};
+    public List<ItemBox> itemBoxes = new List<ItemBox>{};
     [SerializeField] public float projectionVel = 0.5f;
     public bool fireRequest = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private string filePath;
+
+    void Awake()
+    {
+        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+    }
+
     void Start()
     {
+        File.WriteAllText(filePath, string.Empty);
     }
 
     void Update()
@@ -87,7 +95,7 @@ public class Player : MonoBehaviour
 
         forwardVel = getVel(transform.position, mouseWorldPos) * projectionVel;
 
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 10; i++) {
             prevPostition = position;
 
             for (int j = 0; j < planets.Count; j++)
@@ -99,12 +107,63 @@ public class Player : MonoBehaviour
             position += trajVel;
             trajVel = getVel(prevPostition, position) * friction;
 
-            if (i % 4 == 0)
+            if (i % 1 == 0)
             {
                 GameObject trajObject = Instantiate(trajectoryPosition, position, transform.rotation);
                 trajObjects.Add(trajObject);
             }
         } 
+    }
+
+    void saveposition()
+    {
+        // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
+        string outLine = "";
+        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+        Debug.Log(filePath);
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            outLine += transform.position.x.ToString() + ", " + 
+            transform.position.y.ToString() + ", " + 
+            prevPostition.x.ToString() + ", " + 
+            prevPostition.y.ToString() + ", " + 
+            forwardVel.x.ToString() + ", " + 
+            forwardVel.y.ToString() + ", " + 
+            friction + ", " + 
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            "0" + ", " +
+            itemBoxes.Count.ToString() + ", ";
+
+            foreach (ItemBox itemBox in itemBoxes)
+            {
+                outLine += itemBox.getX().ToString() + ", " + 
+                itemBox.getY().ToString() + ", " + 
+                itemBox.getItem().ToString()+ ", ";
+            }
+
+            outLine += planets.Count.ToString() + ", ";
+
+            foreach (Planet planet in planets)
+            {
+                outLine += planet.getX().ToString() + ", " + 
+                planet.getY().ToString() + ", " + 
+                planet.getVel().x.ToString() + ", " + 
+                planet.getVel().y.ToString() + ", " + 
+                planet.getMass().ToString() + ", ";
+            }
+
+            Debug.Log(outLine);
+            writer.WriteLine(outLine);
+        }
+
+
     }
     void updatePlayer()
     {
@@ -117,6 +176,8 @@ public class Player : MonoBehaviour
 
         transform.position += forwardVel;
         forwardVel = getVel(prevPostition, transform.position) * friction;
+
+        saveposition();
     }
     
     Vector2 getGravityVector(Planet planet, Vector3 position)

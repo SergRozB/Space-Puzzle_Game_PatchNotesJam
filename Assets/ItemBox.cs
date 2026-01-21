@@ -17,4 +17,19 @@ public class ItemBox : MonoBehaviour
     {
         
     }
+
+    public Item getItem()
+    {
+        return this.item;
+    }
+
+    public float getX()
+    {
+        return transform.position.x;
+    }
+
+    public float getY()
+    {
+        return transform.position.y;
+    }
 }
