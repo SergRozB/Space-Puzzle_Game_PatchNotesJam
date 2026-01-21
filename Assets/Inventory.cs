@@ -5,10 +5,14 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour
 {
-    private List<GameObject> inventory = new List<GameObject>(){};
+    private List<int> inventory = new List<int>(){};
 
-    public void addItem(GameObject item)
+    public void addItem(int item, int amount)
     {
-        inventory.Add(item);
+        for (int i = 0; i < amount; i++)
+        {
+            inventory.Add(item);
+        }
+        
     }
 }

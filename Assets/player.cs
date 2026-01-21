@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using Unity.Mathematics;
 using System.IO;
+using System.Globalization;
+using System.Linq;
 using UnityEngine.UI;
 
 
@@ -15,7 +17,7 @@ public class Player : MonoBehaviour
     private List<GameObject> trajObjects = new List<GameObject>(){};
     [SerializeField] private GameObject trajectoryPosition;
     [SerializeField] private const int MAXTRAJECTORY = 50;
-    private Inventory inventory;
+    private Inventory inventory = new Inventory(new List<int>(){0, 0, 0, 0, 0, 0, 0, 0, 0});
     private bool fired = false;
     private Vector2 mousePos = new Vector2(){};
     [SerializeField] private Vector3 forwardVel = new Vector3(0f, 0f, 0f){};
@@ -115,56 +117,6 @@ public class Player : MonoBehaviour
         } 
     }
 
-    void saveposition()
-    {
-        // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
-        string outLine = "";
-        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
-        Debug.Log(filePath);
-        using (StreamWriter writer = new StreamWriter(filePath, true))
-        {
-            outLine += transform.position.x.ToString() + ", " + 
-            transform.position.y.ToString() + ", " + 
-            prevPostition.x.ToString() + ", " + 
-            prevPostition.y.ToString() + ", " + 
-            forwardVel.x.ToString() + ", " + 
-            forwardVel.y.ToString() + ", " + 
-            friction + ", " + 
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            "0" + ", " +
-            itemBoxes.Count.ToString() + ", ";
-
-            foreach (ItemBox itemBox in itemBoxes)
-            {
-                outLine += itemBox.getX().ToString() + ", " + 
-                itemBox.getY().ToString() + ", " + 
-                itemBox.getItem().ToString()+ ", ";
-            }
-
-            outLine += planets.Count.ToString() + ", ";
-
-            foreach (Planet planet in planets)
-            {
-                outLine += planet.getX().ToString() + ", " + 
-                planet.getY().ToString() + ", " + 
-                planet.getVel().x.ToString() + ", " + 
-                planet.getVel().y.ToString() + ", " + 
-                planet.getMass().ToString() + ", ";
-            }
-
-            Debug.Log(outLine);
-            writer.WriteLine(outLine);
-        }
-
-
-    }
     void updatePlayer()
     {
         prevPostition = transform.position;
@@ -179,7 +131,102 @@ public class Player : MonoBehaviour
 
         saveposition();
     }
-    
+    void saveposition()
+    {
+        // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.amount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
+        string outLine = "";
+        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+        Debug.Log(filePath);
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            outLine += transform.position.x.ToString() + "," + 
+            transform.position.y.ToString() + "," + 
+            prevPostition.x.ToString() + "," + 
+            prevPostition.y.ToString() + "," + 
+            forwardVel.x.ToString() + "," + 
+            forwardVel.y.ToString() + "," + 
+            friction + "," + 
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            "0" + "," +
+            itemBoxes.Count.ToString() + ",";
+
+            foreach (ItemBox itemBox in itemBoxes)
+            {
+                outLine += itemBox.getX().ToString() + "," + 
+                itemBox.getY().ToString() + "," + 
+                itemBox.getItem().ToString()+ "," +
+                itemBox.getItemAmount().ToString() + ",";
+            }
+
+            outLine += planets.Count.ToString() + ",";
+
+            foreach (Planet planet in planets)
+            {
+                outLine += planet.getX().ToString() + "," + 
+                planet.getY().ToString() + "," + 
+                planet.getVel().x.ToString() + "," + 
+                planet.getVel().y.ToString() + "," + 
+                planet.getMass().ToString() + ",";
+            }
+
+            Debug.Log(outLine);
+            writer.WriteLine(outLine);
+        }
+    }
+
+    void loadPosition() 
+    {
+        // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.itemamount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
+        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+
+        if (File.Exists(filePath))
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string frame = reader.ReadLine();
+                    string[] frameInfo = frame.Split(',');
+
+                    transform.position = new Vector3(stringToFloat(frameInfo[0]), stringToFloat(frameInfo[1]), 0);
+                    prevPostition = new Vector3(stringToFloat(frameInfo[2]), stringToFloat(frameInfo[3]), 0);
+                    forwardVel = new Vector3(stringToFloat(frameInfo[4]), stringToFloat(frameInfo[5]), 0);
+                    friction = stringToFloat(frameInfo[6]);
+
+                    for (int i = 0; i < 9; i++)
+                    {
+                        inventory.setItems(frameInfo[6..15].Select(int.Parse).ToList());
+                    }
+
+                    for (int i = 0; i < int.Parse(frameInfo[16]); i++)
+                    {
+                        ItemBox box = Instantiate(new ItemBox(int.Parse(frameInfo[18 + 4*i]), int.Parse(frameInfo[19 + 4*i])), new Vector3(stringToFloat(frameInfo[16 + 4*i]), stringToFloat(frameInfo[17 + 4*i]), 0), Quaternion.identity);
+                        itemBoxes.Add(box);
+                    }
+
+                    int csvIndex = 16 + int.Parse(frameInfo[16]) * 4;
+
+                    for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
+                    {
+                        Planet planet = Instantiate(new Planet(stringToFloat(frameInfo[csvIndex + 5 + 5*i]), new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 5*i]), stringToFloat(frameInfo[csvIndex + 4 + 5*i]), 0)), new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
+                        planets.Add(planet);
+                    }
+                }
+            }
+        }
+    }
+
+    float stringToFloat(string value)
+    {
+        return float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+    }
     Vector2 getGravityVector(Planet planet, Vector3 position)
     {
         Vector2 force = new Vector2(){};
@@ -209,7 +256,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "itemBox")
         {
             Destroy(collision.gameObject);
-            inventory.addItem(collision.gameObject);
+            //inventory.addItem(collision.gameObject);
         }
 
         if (collision.gameObject.tag == "goal")
