@@ -136,7 +136,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.45882356, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _Color: {r: 0.45882356, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.66865057, g: 3.894339, b: 3.894339, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

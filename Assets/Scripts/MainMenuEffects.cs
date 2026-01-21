@@ -9,6 +9,7 @@ public class MainMenuEffects : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.ignoreListenerPause = true;
     }
     public void PlayHoveringClip() 
     {
