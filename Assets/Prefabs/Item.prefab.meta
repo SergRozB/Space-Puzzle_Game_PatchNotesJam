@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Canvas.prefab.meta
+guid: 42f679cf10fa00440bbd24277723735a
+========
+guid: c661f072052bf6a48aa18df88d641c7d
+>>>>>>>> 701d4f3a4e398d280d12e38ec77bc23ca9e45da0:Assets/Prefabs/Item.prefab.meta
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

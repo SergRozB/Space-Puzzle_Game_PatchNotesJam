@@ -7,6 +7,7 @@ TagManager:
   - flor
   - coin
   - Item
+  - Planet
   layers:
   - Default
   - TransparentFX
