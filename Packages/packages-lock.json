@@ -273,6 +273,14 @@
       },
       "url": "https://packages.unity.com"
     },
+    "www.nulltale.vhsfx": {
+      "version": "file:C:/Users/Owner/VhsFx-master/VhsFx-master",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "14.0.6"
+      }
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

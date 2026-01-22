@@ -6,15 +6,16 @@ TagManager:
   tags:
   - flor
   - coin
+  - Item
   - Planet
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Item
   - Water
   - UI
-  - 
+  - TV
   - 
   - 
   - 
@@ -41,6 +42,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Back
+    uniqueID: 3204676067
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
