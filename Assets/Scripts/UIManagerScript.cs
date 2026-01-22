@@ -7,7 +7,6 @@ public class UIManagerScript : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("isPaused: " + playerInputManager.isPaused);
         if (playerInputManager.isPaused) 
         {
             pauseMenu.SetActive(true);

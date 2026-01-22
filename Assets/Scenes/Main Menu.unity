@@ -226,7 +226,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.2604165
+  orthographic size: 5.2708335
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -961,6 +961,26 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1734327468}
+    - target: {fileID: 3466897287355463413, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
+      propertyPath: m_fontSize
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3466897287355463413, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b2735b22e22f5d4d82bba5cba4c9a3d, type: 2}
+    - target: {fileID: 3466897287355463413, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3466897287355463413, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3984544264501597807, guid: 4b2735b22e22f5d4d82bba5cba4c9a3d, type: 2}
+    - target: {fileID: 3466897287355463413, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5287605502795207545, guid: 3af83376be30cb44fa4b4028aa32ec9d, type: 3}
       propertyPath: m_Camera
       value: 

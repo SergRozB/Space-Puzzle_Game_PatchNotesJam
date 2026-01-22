@@ -6,11 +6,12 @@ TagManager:
   tags:
   - flor
   - coin
+  - Item
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Item
   - Water
   - UI
   - TV
