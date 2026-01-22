@@ -6,11 +6,20 @@ using System;
 
 public class Item : MonoBehaviour
 {
-    private string name;
-    private string function;
+    [SerializeField] private string name;
 
-    public string getFunction()
+    public GameObject getGameObject()
     {
-        return this.function;
+        return this.gameObject;
+    }
+    
+    public string getName()
+    {
+        return this.name;
+    }
+
+    public void setName(string name)
+    {
+        this.name = name;
     }
 }

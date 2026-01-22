@@ -1,15 +1,15 @@
 using UnityEngine;
 using Unity.UI;
 using JetBrains.Annotations;
+using UnityEditor;
 
 public class ItemBox : MonoBehaviour
 {
-    private Player player;
-    private int item;
-    private int amount;
+    [SerializeField] private Item item;
+    [SerializeField] private int amount;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    public ItemBox(int item, int amount) 
+    public ItemBox(Item item, int amount) 
     {
         this.item = item;
         this.amount = amount;
@@ -25,7 +25,12 @@ public class ItemBox : MonoBehaviour
         
     }
 
-    public int getItem()
+    public GameObject getGameObject()
+    {
+        return this.gameObject;
+    }
+
+    public Item getItem()
     {
         return this.item;
     }
@@ -42,5 +47,15 @@ public class ItemBox : MonoBehaviour
     public float getY()
     {
         return transform.position.y;
+    }
+
+    public void setItem(Item item)
+    {
+        this.item = item;
+    }
+
+    public void setItemAmount(int amount)
+    {
+        this.amount = amount;
     }
 }

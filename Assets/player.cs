@@ -16,8 +16,11 @@ public class Player : MonoBehaviour
     private Vector3 prevPostition = new Vector3(){};
     private List<GameObject> trajObjects = new List<GameObject>(){};
     [SerializeField] private GameObject trajectoryPosition;
+    [SerializeField] private GameObject itemboxObj;
+    [SerializeField] private GameObject planetObj;
+    [SerializeField] private GameObject itemObj;
     [SerializeField] private const int MAXTRAJECTORY = 50;
-    private Inventory inventory = new Inventory(new List<int>(){0, 0, 0, 0, 0, 0, 0, 0, 0});
+    private List<GameObject> inventory = new List<GameObject>(){};
     private bool fired = false;
     private Vector2 mousePos = new Vector2(){};
     [SerializeField] private Vector3 forwardVel = new Vector3(0f, 0f, 0f){};
@@ -29,7 +32,8 @@ public class Player : MonoBehaviour
     public List<Planet> planets = new List<Planet>{};
     public List<ItemBox> itemBoxes = new List<ItemBox>{};
     [SerializeField] public float projectionVel = 0.5f;
-    public bool fireRequest = false;
+    private bool fireRequest = false;
+    private bool loadRequest = false;
     private string filePath;
 
     void Awake()
@@ -48,32 +52,48 @@ public class Player : MonoBehaviour
         {    
             fireRequest = true;
         }
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            loadRequest = true;
+        }
+
     }
     // Update is called once per frame
     void FixedUpdate()
     {
         mousePos = mouse.position.ReadValue();
-        if (fired != true)
-        {   
-            if (fireRequest)
-            {
-                fireRequest = false;
-                fired = true;
-                forwardVel = getVel(transform.position, mouseToWorld()) * projectionVel;
-
-            } else {               
-                if (mouse.position.ReadValue() != prevMousePos) {
-                    foreach(GameObject obj in trajObjects) {
-                        Destroy(obj);
+        if (!loadRequest) {
+            if (!fired)
+            {   
+                if (fireRequest)
+                {
+                    if (trajObjects.Count != 0)
+                    {
+                        foreach (GameObject obj in trajObjects)
+                        {
+                            Destroy(obj);
+                        }
                     }
+                    fireRequest = false;
+                    fired = true;
+                    forwardVel = getVel(transform.position, mouseToWorld()) * projectionVel;
 
-                    updateTrajectory();
+                } else {               
+                    if (mouse.position.ReadValue() != prevMousePos) {
+                        foreach(GameObject obj in trajObjects) {
+                            Destroy(obj);
+                        }
+
+                        updateTrajectory();
+                    }
                 }
+            } else {
+                updatePlayer();
             }
         } else {
-            updatePlayer();
+            loadRequest = false;
+            loadPosition(File.ReadLines(filePath).Skip(14).Take(1).First());
         }
-
         prevMousePos = mousePos;
     }
 
@@ -136,7 +156,6 @@ public class Player : MonoBehaviour
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.amount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
         string outLine = "";
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
-        Debug.Log(filePath);
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             outLine += transform.position.x.ToString() + "," + 
@@ -146,22 +165,13 @@ public class Player : MonoBehaviour
             forwardVel.x.ToString() + "," + 
             forwardVel.y.ToString() + "," + 
             friction + "," + 
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
-            "0" + "," +
             itemBoxes.Count.ToString() + ",";
-
             foreach (ItemBox itemBox in itemBoxes)
             {
+                Debug.Log(itemBox.getX().ToString());
                 outLine += itemBox.getX().ToString() + "," + 
                 itemBox.getY().ToString() + "," + 
-                itemBox.getItem().ToString()+ "," +
+                itemBox.getItem().getName() + "," +
                 itemBox.getItemAmount().ToString() + ",";
             }
 
@@ -171,54 +181,51 @@ public class Player : MonoBehaviour
             {
                 outLine += planet.getX().ToString() + "," + 
                 planet.getY().ToString() + "," + 
-                planet.getVel().x.ToString() + "," + 
-                planet.getVel().y.ToString() + "," + 
+                planet.getVelX().ToString() + "," + 
+                planet.getVelY().ToString() + "," + 
                 planet.getMass().ToString() + ",";
             }
 
-            Debug.Log(outLine);
             writer.WriteLine(outLine);
         }
     }
 
-    void loadPosition() 
+    void loadPosition(string frame) 
     {
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.itemamount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
-        filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+        
+        reloadSave();
+        string[] frameInfo = frame.Split(',');
 
-        if (File.Exists(filePath))
-        {
-            using (StreamReader reader = new StreamReader(filePath))
+        transform.position = new Vector3(stringToFloat(frameInfo[0]), stringToFloat(frameInfo[1]), 0);
+        prevPostition = new Vector3(stringToFloat(frameInfo[2]), stringToFloat(frameInfo[3]), 0);
+        forwardVel = new Vector3(stringToFloat(frameInfo[4]), stringToFloat(frameInfo[5]), 0);
+        friction = stringToFloat(frameInfo[6]);
+
+        if (int.Parse(frameInfo[7]) != 0) { 
+            for (int i = 0; i < int.Parse(frameInfo[7]); i++)
             {
-                while (!reader.EndOfStream)
-                {
-                    string frame = reader.ReadLine();
-                    string[] frameInfo = frame.Split(',');
+                GameObject gameBox = Instantiate(itemboxObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
+                ItemBox itembox = gameBox.AddComponent<ItemBox>();
+                GameObject gameItem = Instantiate(itemObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
+                Item item = gameItem.AddComponent<Item>();
+                item.setName("forward");
+                itembox.setItem(item);
+                itembox.setItemAmount(Int32.Parse(frameInfo[11 + 4*i]));
+                itemBoxes.Add(itembox);
+            }
+        }
 
-                    transform.position = new Vector3(stringToFloat(frameInfo[0]), stringToFloat(frameInfo[1]), 0);
-                    prevPostition = new Vector3(stringToFloat(frameInfo[2]), stringToFloat(frameInfo[3]), 0);
-                    forwardVel = new Vector3(stringToFloat(frameInfo[4]), stringToFloat(frameInfo[5]), 0);
-                    friction = stringToFloat(frameInfo[6]);
+        int csvIndex = 8 + int.Parse(frameInfo[7]) * 4;
 
-                    for (int i = 0; i < 9; i++)
-                    {
-                        inventory.setItems(frameInfo[6..15].Select(int.Parse).ToList());
-                    }
-
-                    for (int i = 0; i < int.Parse(frameInfo[16]); i++)
-                    {
-                        ItemBox box = Instantiate(new ItemBox(int.Parse(frameInfo[18 + 4*i]), int.Parse(frameInfo[19 + 4*i])), new Vector3(stringToFloat(frameInfo[16 + 4*i]), stringToFloat(frameInfo[17 + 4*i]), 0), Quaternion.identity);
-                        itemBoxes.Add(box);
-                    }
-
-                    int csvIndex = 16 + int.Parse(frameInfo[16]) * 4;
-
-                    for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
-                    {
-                        Planet planet = Instantiate(new Planet(stringToFloat(frameInfo[csvIndex + 5 + 5*i]), new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 5*i]), stringToFloat(frameInfo[csvIndex + 4 + 5*i]), 0)), new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
-                        planets.Add(planet);
-                    }
-                }
+        if (int.Parse(frameInfo[csvIndex]) != 0) {
+            for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
+            {
+                GameObject gamePlanet = Instantiate(planetObj, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
+                Planet planet = gamePlanet.AddComponent<Planet>();
+                planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 5*i]), stringToFloat(frameInfo[csvIndex + 4 + 5*i]), 0));
+                planet.setMass(stringToFloat(frameInfo[csvIndex + 5 + 5*i]));
+                planets.Add(planet);
             }
         }
     }
@@ -227,6 +234,24 @@ public class Player : MonoBehaviour
     {
         return float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
     }
+
+    void reloadSave()
+    {
+        foreach (Planet planet in planets) {
+            Destroy(planet.getGameObject());
+        }
+
+        foreach (ItemBox itembox in itemBoxes)
+        {
+            Destroy(itembox.getItem().getGameObject());
+            Destroy(itembox.getGameObject());
+        }
+
+        planets.Clear();
+        itemBoxes.Clear();
+
+    }
+
     Vector2 getGravityVector(Planet planet, Vector3 position)
     {
         Vector2 force = new Vector2(){};
@@ -256,7 +281,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "itemBox")
         {
             Destroy(collision.gameObject);
-            //inventory.addItem(collision.gameObject);
+            inventory.Add(collision.gameObject);
         }
 
         if (collision.gameObject.tag == "goal")
