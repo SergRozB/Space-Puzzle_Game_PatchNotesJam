@@ -12,13 +12,8 @@ GameObject:
   - component: {fileID: 6918114262251221086}
   - component: {fileID: 1877924333463924730}
   m_Layer: 0
-<<<<<<<< HEAD:Assets/Prefabs/purplePlanet48x48.prefab
-  m_Name: purplePlanet48x48
-  m_TagString: Untagged
-========
   m_Name: ItemBox
   m_TagString: coin
->>>>>>>> 701d4f3a4e398d280d12e38ec77bc23ca9e45da0:Assets/Prefabs/ItemBox.prefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2907799487fa5ff468e630fbaba90174, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -106,50 +101,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1106126919612060481}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Script: {fileID: 11500000, guid: b8c315256f650534f9429f3e19c9d629, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.ShadowCaster2D
-  m_ShadowGroup: 0
-  m_Priority: 0
-  m_ComponentVersion: 5
-  m_HasRenderer: 1
-  m_UseRendererSilhouette: 1
-  m_CastsShadows: 1
-  m_SelfShadows: 0
-  m_AlphaCutoff: 0.1
-  m_ApplyToSortingLayers: e37903bf00000000
-  m_ShapePath:
-  - {x: -1.0768118, y: -1.1872096, z: 0}
-  - {x: -1.6367884, y: 0.052260876, z: 0}
-  - {x: -1.1504102, y: 1.0400133, z: 0}
-  - {x: -0.017634392, y: 1.5794172, z: 0}
-  - {x: 1.1320105, y: 1.0952115, z: 0}
-  - {x: 1.564723, y: -0.021336794, z: 0}
-  - {x: 1.1783328, y: -1.088506, z: 0}
-  - {x: -0.027156353, y: -1.5551984, z: 0}
-  m_ShapePathHash: -997879571
-  m_InstanceId: 0
-  m_ShadowShape2DComponent: {fileID: 0}
-  m_ShadowShape2DProvider:
-    rid: -2
-  m_ShadowCastingSource: 1
-  m_ShadowMesh:
-    m_Mesh: {fileID: 0}
-    m_LocalBounds:
-      m_Center: {x: -0.036032677, y: 0.012109399, z: 0}
-      m_Extent: {x: 1.6007557, y: 1.5673078, z: 0}
-    m_EdgeProcessing: 1
-    m_TrimEdge: 0.1
-    m_FlipX: 0
-    m_FlipY: 0
-    m_InitialTrim: 0
-  m_CastingOption: 1
-  m_PreviousTrimEdge: 0.1
-  m_PreviousEdgeProcessing: 1
-  m_PreviousShadowCastingSource: 1
-  m_PreviousShadowShape2DSource: {fileID: 6918114262251221086}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+  m_EditorClassIdentifier: Assembly-CSharp::coinScript
+  item: {fileID: 0}
+  amount: 0
