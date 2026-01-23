@@ -183,7 +183,8 @@ public class Player : MonoBehaviour
                 planet.getY().ToString() + "," + 
                 planet.getVelX().ToString() + "," + 
                 planet.getVelY().ToString() + "," + 
-                planet.getMass().ToString() + ",";
+                planet.getMass().ToString() + "," +
+                planet.name + ",";
             }
 
             writer.WriteLine(outLine);
@@ -221,6 +222,7 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[csvIndex]) != 0) {
             for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
             {
+                GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 5*i]];
                 GameObject gamePlanet = Instantiate(planetObj, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
                 Planet planet = gamePlanet.AddComponent<Planet>();
                 planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 5*i]), stringToFloat(frameInfo[csvIndex + 4 + 5*i]), 0));

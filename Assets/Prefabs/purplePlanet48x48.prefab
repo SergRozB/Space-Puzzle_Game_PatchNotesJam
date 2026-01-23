@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4983892469731954085}
   - component: {fileID: 6918114262251221086}
   - component: {fileID: 1877924333463924730}
+  - component: {fileID: 8987089066867053670}
   m_Layer: 0
-  m_Name: purplePlanet48x48 1
+  m_Name: purplePlanet48x48
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,3 +149,16 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+--- !u!114 &8987089066867053670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106126919612060481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffa71a2abb823484cb83166ffa211d9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlanetPrefabStorer
+  planetPrefabs: []
