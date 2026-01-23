@@ -7,7 +7,8 @@ public class PlanetPrefabStorer : MonoBehaviour
     public static Dictionary<string, GameObject> planetPrefabDictionary;
     void Awake()
     {
-        foreach(GameObject planet in planetPrefabs)
+        planetPrefabDictionary = new Dictionary<string, GameObject>();
+        foreach (GameObject planet in planetPrefabs)
         {
             planetPrefabDictionary.Add(planet.name, planet);
         }

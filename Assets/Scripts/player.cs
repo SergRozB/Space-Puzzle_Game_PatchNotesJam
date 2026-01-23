@@ -17,7 +17,6 @@ public class Player : MonoBehaviour
     private List<GameObject> trajObjects = new List<GameObject>(){};
     [SerializeField] private GameObject trajectoryPosition;
     [SerializeField] private GameObject itemboxObj;
-    [SerializeField] private GameObject planetObj;
     [SerializeField] private GameObject itemObj;
     [SerializeField] private const int MAXTRAJECTORY = 50;
     private List<GameObject> inventory = new List<GameObject>(){};
@@ -29,7 +28,8 @@ public class Player : MonoBehaviour
     [SerializeField] float MAXGRAVFORCE = 0.5f;
     [SerializeField] float exponent = 2.8f;
     Mouse mouse = Mouse.current;
-    public List<Planet> planets = new List<Planet>{};
+    public GameObject allPlanetsParent;
+    private List<Planet> planets = new List<Planet>{};
     public List<ItemBox> itemBoxes = new List<ItemBox>{};
     [SerializeField] public float projectionVel = 0.5f;
     private bool fireRequest = false;
@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        planets = allPlanetsParent.GetComponentsInChildren<Planet>().ToList();
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
     }
 
@@ -156,6 +157,7 @@ public class Player : MonoBehaviour
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.amount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
         string outLine = "";
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+        float counter = 0f;
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             outLine += transform.position.x.ToString() + "," + 
@@ -166,13 +168,12 @@ public class Player : MonoBehaviour
             forwardVel.y.ToString() + "," + 
             friction + "," + 
             itemBoxes.Count.ToString() + ",";
-            foreach (ItemBox itemBox in itemBoxes)
+            foreach (ItemBox box in itemBoxes)
             {
-                Debug.Log(itemBox.getX().ToString());
-                outLine += itemBox.getX().ToString() + "," + 
-                itemBox.getY().ToString() + "," + 
-                itemBox.getItem().getName() + "," +
-                itemBox.getItemAmount().ToString() + ",";
+                outLine += box.getX().ToString() + "," + 
+                box.getY().ToString() + "," + 
+                box.getItem().getName() + "," +
+                box.getItemAmount().ToString() + ",";
             }
 
             outLine += planets.Count.ToString() + ",";
@@ -183,8 +184,7 @@ public class Player : MonoBehaviour
                 planet.getY().ToString() + "," + 
                 planet.getVelX().ToString() + "," + 
                 planet.getVelY().ToString() + "," + 
-                planet.getMass().ToString() + "," +
-                planet.name + ",";
+                planet.getMass().ToString() + ",";
             }
 
             writer.WriteLine(outLine);
@@ -222,11 +222,16 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[csvIndex]) != 0) {
             for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
             {
-                GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 5*i]];
+<<<<<<< Updated upstream:Assets/player.cs
                 GameObject gamePlanet = Instantiate(planetObj, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
+=======
+                Debug.Log("planet prefab name: " + frameInfo[csvIndex + 6 + 6*i]);
+                GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 6*i]];
+                GameObject gamePlanet = Instantiate(prefabToUse, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 6*i]), stringToFloat(frameInfo[csvIndex + 2 + 6*i]), 0), Quaternion.identity);
+>>>>>>> Stashed changes:Assets/Scripts/player.cs
                 Planet planet = gamePlanet.AddComponent<Planet>();
-                planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 5*i]), stringToFloat(frameInfo[csvIndex + 4 + 5*i]), 0));
-                planet.setMass(stringToFloat(frameInfo[csvIndex + 5 + 5*i]));
+                planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 6*i]), stringToFloat(frameInfo[csvIndex + 4 + 6*i]), 0));
+                planet.setMass(stringToFloat(frameInfo[csvIndex + 5 + 6*i]));
                 planets.Add(planet);
             }
         }
@@ -243,10 +248,10 @@ public class Player : MonoBehaviour
             Destroy(planet.getGameObject());
         }
 
-        foreach (ItemBox itembox in itemBoxes)
+        foreach (ItemBox box in itemBoxes)
         {
-            Destroy(itembox.getItem().getGameObject());
-            Destroy(itembox.getGameObject());
+            Destroy(box.getItem().getGameObject());
+            Destroy(box.getGameObject());
         }
 
         planets.Clear();
