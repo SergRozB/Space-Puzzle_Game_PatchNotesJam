@@ -20,4 +20,9 @@ public class UIManagerScript : MonoBehaviour
             AudioListener.pause = false;
         }
     }
+
+    public void Unpause() 
+    {
+        playerInputManager.isPaused = false;
+    }
 }

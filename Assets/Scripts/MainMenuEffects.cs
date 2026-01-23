@@ -14,12 +14,10 @@ public class MainMenuEffects : MonoBehaviour
     public void PlayHoveringClip() 
     {
         audioSource.PlayOneShot(hoveringClip);
-        Debug.Log("Playing hovering clip");
     }
 
     public void PlaySelectedClip() 
     {
         audioSource.PlayOneShot(selectedClip);
-        Debug.Log("Playing selected clip");
     }
 }
