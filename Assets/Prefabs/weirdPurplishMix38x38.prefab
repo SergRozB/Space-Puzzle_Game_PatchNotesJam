@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8430707538799527337}
   - component: {fileID: 8841998794185853046}
   - component: {fileID: 7245156071627510266}
+  - component: {fileID: 4499770722887971846}
   m_Layer: 0
   m_Name: weirdPurplishMix38x38
   m_TagString: Untagged
@@ -26,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7103855473505921343}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.080855, y: -0.9232527, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.67, y: -1.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -148,8 +149,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-<<<<<<< Updated upstream
-=======
 --- !u!114 &4499770722887971846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +161,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b67961638a035e4caedcccf78bbe1f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Planet
-  mass: 1
+  mass: 0
   vel: {x: 0, y: 0, z: 0}
->>>>>>> Stashed changes

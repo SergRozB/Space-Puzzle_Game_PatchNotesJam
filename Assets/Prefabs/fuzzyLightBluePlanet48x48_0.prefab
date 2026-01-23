@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 968072797094678169}
   - component: {fileID: 7675017171691551410}
   - component: {fileID: 6080545840366703850}
+  - component: {fileID: 509522191454884829}
   m_Layer: 0
   m_Name: fuzzyLightBluePlanet48x48_0
   m_TagString: Untagged
@@ -26,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4826589592886656122}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.502093, y: 1.4210341, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.43, y: 1.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -137,7 +138,7 @@ MonoBehaviour:
     m_TrimEdge: 0.1
     m_FlipX: 0
     m_FlipY: 0
-    m_InitialTrim: 0.1
+    m_InitialTrim: 0
   m_CastingOption: 1
   m_PreviousTrimEdge: 0.1
   m_PreviousEdgeProcessing: 1
@@ -148,8 +149,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-<<<<<<< Updated upstream
-=======
 --- !u!114 &509522191454884829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +161,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b67961638a035e4caedcccf78bbe1f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Planet
-  mass: 1
+  mass: 0
   vel: {x: 0, y: 0, z: 0}
->>>>>>> Stashed changes
