@@ -29,6 +29,7 @@ public class PlayerInputManager : MonoBehaviour
     private bool changedSlot = false;
     [SerializeField] private GameObject selectedItem;
     [SerializeField] private float itemSpriteScale = 5f;
+    public List<Vector3> itemBoxPositions = new List<Vector3>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,6 +55,7 @@ public class PlayerInputManager : MonoBehaviour
         float yChange = 85f;
         for (int i = 0; i < inventorySize; i++)
         {
+
             Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
             inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventorySlotsParent);
             UnityEngine.UI.Image slotImage = inventorySlotGameObjects[i].GetComponent<UnityEngine.UI.Image>();
@@ -138,8 +140,10 @@ public class PlayerInputManager : MonoBehaviour
         if (collision.gameObject.CompareTag("ItemBox"))
         {
             ItemBox itemBoxScript = collision.gameObject.GetComponent<ItemBox>();
+            itemBoxScript.wasPickedUp = true;
             AddToInventory(itemBoxScript.getItem().getGameObject());
-            if(!isInventoryFull) 
+            itemBoxPositions.Add(collision.gameObject.transform.position);
+            if (!isInventoryFull) 
             {
                 collision.gameObject.SetActive(false);
             }
