@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 810421377067084381}
   - component: {fileID: -7160493842506639351}
   - component: {fileID: -7158866951489368083}
-  - component: {fileID: 6885482930940386691}
-  - component: {fileID: 2114679191463122004}
+  - component: {fileID: -8625045533257815261}
+  - component: {fileID: 5131881035577704249}
   m_Layer: 0
   m_Name: Trajectory Position
   m_TagString: Untagged
@@ -130,7 +130,7 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.1
---- !u!114 &6885482930940386691
+--- !u!114 &-8625045533257815261
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrajectoryObjectScript
   applyGravity: 0
---- !u!50 &2114679191463122004
+--- !u!50 &5131881035577704249
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -155,7 +155,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.0001
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -169,4 +169,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4

@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     private UnityEngine.UI.Slider slider;
     [SerializeField] private const int MAXTRAJECTORY = 50;
     private List<GameObject> inventory = new List<GameObject>(){};
-    public bool fired = false;
+    private bool fired = false;
     private Vector2 mousePos = new Vector2(){};
     [SerializeField] private Vector3 forwardVel = new Vector3(0f, 0f, 0f){};
     [SerializeField] private float friction = 0.95f;
@@ -42,7 +42,6 @@ public class Player : MonoBehaviour
     private string filePath;
     private bool userChangeSlider = true;
     [SerializeField] private int maxTrajectoryPoints = 10;
-    public float startTime = 0;
 
     void Awake()
     {
@@ -105,7 +104,6 @@ public class Player : MonoBehaviour
                     fireRequest = false;
                     fired = true;
                     forwardVel = getVel(transform.position, mouseToWorld()) * projectionVel;
-                    startTime = Time.time;  
 
                 } else {               
                     if (mouse.position.ReadValue() != prevMousePos) {
@@ -264,20 +262,14 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[7]) != 0) { 
             for (int i = 0; i < int.Parse(frameInfo[7]); i++)
             {
-                PlayerInputManager  playerInputManager = GetComponent<PlayerInputManager>();
-                List<Vector3> itemBoxPositions = playerInputManager.itemBoxPositions;
-                Vector3 itemBoxPos = new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0);
-                if (!itemBoxPositions.Contains(itemBoxPos))
-                {
-                    GameObject gameBox = Instantiate(itemboxObj, new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0), Quaternion.identity);
-                    ItemBox itembox = gameBox.AddComponent<ItemBox>();
-                    GameObject gameItem = Instantiate(itemObj, new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0), Quaternion.identity);
-                    Item item = gameItem.AddComponent<Item>();
-                    item.setName("forward");
-                    itembox.setItem(item);
-                    itembox.setItemAmount(Int32.Parse(frameInfo[11 + 4 * i]));
-                    itemBoxes.Add(itembox);
-                }
+                GameObject gameBox = Instantiate(itemboxObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
+                ItemBox itembox = gameBox.AddComponent<ItemBox>();
+                GameObject gameItem = Instantiate(itemObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
+                Item item = gameItem.AddComponent<Item>();
+                item.setName("forward");
+                itembox.setItem(item);
+                itembox.setItemAmount(Int32.Parse(frameInfo[11 + 4*i]));
+                itemBoxes.Add(itembox);
             }
         }
 
