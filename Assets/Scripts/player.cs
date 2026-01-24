@@ -8,8 +8,10 @@ using System.IO;
 using System.Globalization;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
-
+[RequireComponent(typeof(UnityEngine.UI.Slider))]
+[RequireComponent(typeof(UnityEngine.UI.Slider))]
 public class Player : MonoBehaviour
 {
     bool inProgress = true;
@@ -18,6 +20,9 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject trajectoryPosition;
     [SerializeField] private GameObject itemboxObj;
     [SerializeField] private GameObject itemObj;
+    [SerializeField] private GameObject sliderObj;
+    [SerializeField] private Transform canvas;
+    private UnityEngine.UI.Slider slider;
     [SerializeField] private const int MAXTRAJECTORY = 50;
     private List<GameObject> inventory = new List<GameObject>(){};
     public bool fired = false;
@@ -33,8 +38,9 @@ public class Player : MonoBehaviour
     public List<ItemBox> itemBoxes = new List<ItemBox>{};
     [SerializeField] public float projectionVel = 0.5f;
     private bool fireRequest = false;
-    private bool loadRequest = false;
+    private bool paused = false;
     private string filePath;
+    private bool userChangeSlider = true;
     [SerializeField] private int maxTrajectoryPoints = 10;
     public float startTime = 0;
 
@@ -42,10 +48,21 @@ public class Player : MonoBehaviour
     {
         planets = allPlanetsParent.GetComponentsInChildren<Planet>().ToList();
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
-        for(int i = 0; i < maxTrajectoryPoints; i++) {
+        for (int i = 0; i < maxTrajectoryPoints; i++) {
             GameObject trajObject = Instantiate(trajectoryPosition, new Vector3(0,0,0), transform.rotation);
             trajObjects.Add(trajObject);
         }
+
+        GameObject s = Instantiate(sliderObj, new Vector3(0,0,0), transform.rotation, canvas);
+        slider = s.GetComponent<UnityEngine.UI.Slider>(); 
+        RectTransform sliderRect = slider.GetComponent<RectTransform>();
+        sliderRect.anchoredPosition = new Vector3(0, 80, 0);
+        sliderRect.sizeDelta = new Vector3(400f, 20f, 0f);
+        slider.wholeNumbers = true;
+        slider.minValue = 0;
+        slider.maxValue = 0;
+        slider.value = 0;
+        slider.onValueChanged.AddListener(delegate{sliderValueChanged();});
     }
 
     void Start()
@@ -61,7 +78,11 @@ public class Player : MonoBehaviour
         }
         if (mouse.rightButton.wasPressedThisFrame)
         {
-            loadRequest = true;
+            var lines = File.ReadLines(filePath).Take((int) slider.value + 1).ToList();
+            File.WriteAllLines(filePath, lines);
+            slider.maxValue = slider.value + 1;
+
+            paused = false;
         }
         RotateToVelocity();
     }
@@ -69,7 +90,7 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         mousePos = mouse.position.ReadValue();
-        if (!loadRequest) {
+        if (!paused) {
             if (!fired)
             {   
                 if (fireRequest)
@@ -88,18 +109,21 @@ public class Player : MonoBehaviour
 
                 } else {               
                     if (mouse.position.ReadValue() != prevMousePos) {
-
                         updateTrajectory();
                     }
                 }
             } else {
                 updatePlayer();
             }
-        } else {
-            loadRequest = false;
-            loadPosition(File.ReadLines(filePath).Skip(14).Take(1).First());
         }
-        prevMousePos = mousePos;
+    }
+
+    void sliderValueChanged()
+    {
+        if (userChangeSlider) {
+            loadPosition(File.ReadLines(filePath).Skip((int) slider.value - 1).Take(1).First());
+            paused = true;
+        }    
     }
 
     private void RotateToVelocity() 
@@ -187,7 +211,6 @@ public class Player : MonoBehaviour
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.amount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
         string outLine = "";
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
-        float counter = 0f;
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             outLine += transform.position.x.ToString() + "," + 
@@ -219,6 +242,10 @@ public class Player : MonoBehaviour
             }
 
             writer.WriteLine(outLine);
+            slider.maxValue += 1;
+            userChangeSlider = false;
+            slider.value = slider.maxValue;
+            userChangeSlider = true;
         }
     }
 
