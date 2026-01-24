@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject itemObj;
     [SerializeField] private const int MAXTRAJECTORY = 50;
     private List<GameObject> inventory = new List<GameObject>(){};
-    private bool fired = false;
+    public bool fired = false;
     private Vector2 mousePos = new Vector2(){};
     [SerializeField] private Vector3 forwardVel = new Vector3(0f, 0f, 0f){};
     [SerializeField] private float friction = 0.95f;
@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     private bool loadRequest = false;
     private string filePath;
     [SerializeField] private int maxTrajectoryPoints = 10;
+    public float startTime = 0;
 
     void Awake()
     {
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour
                     fireRequest = false;
                     fired = true;
                     forwardVel = getVel(transform.position, mouseToWorld()) * projectionVel;
+                    startTime = Time.time;  
 
                 } else {               
                     if (mouse.position.ReadValue() != prevMousePos) {
@@ -147,8 +149,8 @@ public class Player : MonoBehaviour
 
                 else
                 {
-                    Vector2 force = getGravityVector(planet, transform.position);
-                    transform.position += new Vector3(force.x, force.y, 0);
+                    Vector2 force = getGravityVector(planet, position);
+                    position += new Vector3(force.x, force.y, 0);
                 }
             }
 
@@ -246,14 +248,20 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[7]) != 0) { 
             for (int i = 0; i < int.Parse(frameInfo[7]); i++)
             {
-                GameObject gameBox = Instantiate(itemboxObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
-                ItemBox itembox = gameBox.AddComponent<ItemBox>();
-                GameObject gameItem = Instantiate(itemObj, new Vector3(stringToFloat(frameInfo[8 + 4*i]), stringToFloat(frameInfo[9 + 4*i]), 0), Quaternion.identity);
-                Item item = gameItem.AddComponent<Item>();
-                item.setName("forward");
-                itembox.setItem(item);
-                itembox.setItemAmount(Int32.Parse(frameInfo[11 + 4*i]));
-                itemBoxes.Add(itembox);
+                PlayerInputManager  playerInputManager = GetComponent<PlayerInputManager>();
+                List<Vector3> itemBoxPositions = playerInputManager.itemBoxPositions;
+                Vector3 itemBoxPos = new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0);
+                if (!itemBoxPositions.Contains(itemBoxPos))
+                {
+                    GameObject gameBox = Instantiate(itemboxObj, new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0), Quaternion.identity);
+                    ItemBox itembox = gameBox.AddComponent<ItemBox>();
+                    GameObject gameItem = Instantiate(itemObj, new Vector3(stringToFloat(frameInfo[8 + 4 * i]), stringToFloat(frameInfo[9 + 4 * i]), 0), Quaternion.identity);
+                    Item item = gameItem.AddComponent<Item>();
+                    item.setName("forward");
+                    itembox.setItem(item);
+                    itembox.setItemAmount(Int32.Parse(frameInfo[11 + 4 * i]));
+                    itemBoxes.Add(itembox);
+                }
             }
         }
 
@@ -264,10 +272,11 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("planet prefab name: " + frameInfo[csvIndex + 6 + 6*i]);
                 GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 6*i]];
-                GameObject gamePlanet = Instantiate(prefabToUse, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 6*i]), stringToFloat(frameInfo[csvIndex + 2 + 6*i]), 0), Quaternion.identity);
+                GameObject gamePlanet = Instantiate(prefabToUse, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 6*i]), stringToFloat(frameInfo[csvIndex + 2 + 6*i]), 0), Quaternion.identity, allPlanetsParent.transform);
                 Planet planet = gamePlanet.AddComponent<Planet>();
                 planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 6*i]), stringToFloat(frameInfo[csvIndex + 4 + 6*i]), 0));
                 planet.setMass(stringToFloat(frameInfo[csvIndex + 5 + 6*i]));
+                planet.name = prefabToUse.name;
                 planets.Add(planet);
             }
         }

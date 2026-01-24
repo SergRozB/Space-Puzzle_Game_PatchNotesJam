@@ -29,6 +29,7 @@ public class PlayerInputManager : MonoBehaviour
     private bool changedSlot = false;
     [SerializeField] private GameObject selectedItem;
     [SerializeField] private float itemSpriteScale = 5f;
+    public List<Vector3> itemBoxPositions = new List<Vector3>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,8 +55,11 @@ public class PlayerInputManager : MonoBehaviour
         float yChange = 85f;
         for (int i = 0; i < inventorySize; i++)
         {
-            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
-            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventorySlotsParent);
+
+            Vector3 slotPosition = leftInventoryTransform.gameObject.GetComponent<RectTransform>().position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
+            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, Vector3.zero, Quaternion.identity, inventorySlotsParent);
+            RectTransform slotRectTransform = inventorySlotGameObjects[i].GetComponent<RectTransform>();
+            slotRectTransform.position = slotPosition;
             UnityEngine.UI.Image slotImage = inventorySlotGameObjects[i].GetComponent<UnityEngine.UI.Image>();
             slotImage.sprite = noItemInSlotSprite;
             slotImage.rectTransform.localScale = new Vector3(itemSpriteScale, itemSpriteScale, 0);
@@ -138,8 +142,10 @@ public class PlayerInputManager : MonoBehaviour
         if (collision.gameObject.CompareTag("ItemBox"))
         {
             ItemBox itemBoxScript = collision.gameObject.GetComponent<ItemBox>();
+            itemBoxScript.wasPickedUp = true;
             AddToInventory(itemBoxScript.getItem().getGameObject());
-            if(!isInventoryFull) 
+            itemBoxPositions.Add(collision.gameObject.transform.position);
+            if (!isInventoryFull) 
             {
                 collision.gameObject.SetActive(false);
             }
