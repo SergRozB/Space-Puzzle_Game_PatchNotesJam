@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using Unity.Mathematics;
 using System.IO;
 using System.Globalization;
 using System.Linq;
