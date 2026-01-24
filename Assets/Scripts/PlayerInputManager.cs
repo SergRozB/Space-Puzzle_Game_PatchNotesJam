@@ -1,15 +1,16 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
-using System.Collections;
-using UnityEngine.UIElements;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerInputManager : MonoBehaviour
 {
     public InputActionReference pause;
-    public InputActionReference move;
+    public InputActionReference control;
     [SerializeField] private InputActionReference scroll;
     public bool isPaused = false;
     [SerializeField] private GameObject[] inventory;
@@ -41,7 +42,6 @@ public class PlayerInputManager : MonoBehaviour
     void Update()
     {
         isPaused = pause.action.triggered ? !isPaused : isPaused;
-        transform.Translate(move.action.ReadValue<Vector2>() * Time.deltaTime * moveSpeed);
         SelectInventorySlot();
     }
 
@@ -98,13 +98,13 @@ public class PlayerInputManager : MonoBehaviour
 
     private void SelectInventorySlot() 
     {
-        if(scroll.action.ReadValue<float>() > 0) 
+        if(scroll.action.ReadValue<float>() > 0 && control.action.ReadValue<float>() != 1) 
         {
             selectedSlot = (selectedSlot + 1) % inventorySize;
             changedSlot = true;
         }
 
-        else if(scroll.action.ReadValue<float>() < 0) 
+        else if(scroll.action.ReadValue<float>() < 0 && control.action.ReadValue<float>() != 1) 
         {
             selectedSlot = (selectedSlot - 1 + inventorySize) % inventorySize;
             changedSlot = true;
@@ -135,9 +135,10 @@ public class PlayerInputManager : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Item"))
+        if (collision.gameObject.CompareTag("ItemBox"))
         {
-            AddToInventory(collision.gameObject);
+            ItemBox itemBoxScript = collision.gameObject.GetComponent<ItemBox>();
+            AddToInventory(itemBoxScript.getItem().getGameObject());
             if(!isInventoryFull) 
             {
                 collision.gameObject.SetActive(false);

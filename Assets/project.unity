@@ -245,7 +245,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4948587801680178356, guid: 65f18493c1544894bb5d89b19a4dd09d, type: 3}
   m_PrefabInstance: {fileID: 1967224388}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534686783}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d423eac3d4bdfd44caf6c59517d4fcdc, type: 3}
@@ -339,7 +339,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &905978847
 Transform:
@@ -445,7 +445,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1502499490
 Transform:

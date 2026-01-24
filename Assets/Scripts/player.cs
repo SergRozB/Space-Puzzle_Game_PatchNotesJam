@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     private bool fireRequest = false;
     private bool loadRequest = false;
     private string filePath;
+    [SerializeField] private int maxTrajectoryPoints = 10;
 
     void Awake()
     {
@@ -57,7 +58,7 @@ public class Player : MonoBehaviour
         {
             loadRequest = true;
         }
-
+        RotateToVelocity();
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -98,6 +99,16 @@ public class Player : MonoBehaviour
         prevMousePos = mousePos;
     }
 
+    private void RotateToVelocity() 
+    {
+        float angleToRotate = Vector3.Angle(Vector3.right, forwardVel);
+        if(forwardVel.y < 0) 
+        {
+            angleToRotate = -angleToRotate;
+        }
+        transform.localEulerAngles = new Vector3(0, 0, angleToRotate);
+    }
+
     Vector3 mouseToWorld()
     {
         Vector3 m = mousePos;
@@ -118,7 +129,7 @@ public class Player : MonoBehaviour
 
         forwardVel = getVel(transform.position, mouseWorldPos) * projectionVel;
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < maxTrajectoryPoints; i++) {
             prevPostition = position;
 
             for (int j = 0; j < planets.Count; j++)
@@ -184,7 +195,8 @@ public class Player : MonoBehaviour
                 planet.getY().ToString() + "," + 
                 planet.getVelX().ToString() + "," + 
                 planet.getVelY().ToString() + "," + 
-                planet.getMass().ToString() + ",";
+                planet.getMass().ToString() + "," +
+                planet.name + ",";
             }
 
             writer.WriteLine(outLine);
@@ -222,13 +234,9 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[csvIndex]) != 0) {
             for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
             {
-<<<<<<< Updated upstream:Assets/player.cs
-                GameObject gamePlanet = Instantiate(planetObj, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 5*i]), stringToFloat(frameInfo[csvIndex + 2 + 5*i]), 0), Quaternion.identity);
-=======
                 Debug.Log("planet prefab name: " + frameInfo[csvIndex + 6 + 6*i]);
                 GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 6*i]];
                 GameObject gamePlanet = Instantiate(prefabToUse, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 6*i]), stringToFloat(frameInfo[csvIndex + 2 + 6*i]), 0), Quaternion.identity);
->>>>>>> Stashed changes:Assets/Scripts/player.cs
                 Planet planet = gamePlanet.AddComponent<Planet>();
                 planet.setVel(new Vector3(stringToFloat(frameInfo[csvIndex + 3 + 6*i]), stringToFloat(frameInfo[csvIndex + 4 + 6*i]), 0));
                 planet.setMass(stringToFloat(frameInfo[csvIndex + 5 + 6*i]));
