@@ -134,8 +134,22 @@ public class Player : MonoBehaviour
 
             for (int j = 0; j < planets.Count; j++)
             {
-                Vector2 force = getGravityVector(planets[j], position);
-                position += new Vector3 (force.x, force.y, 0);
+                Planet planet = planets[j];
+                GameObject currentTrajObject = trajObjects[i];
+                if (gravityCircle != null)
+                {
+                    if (planet.gameObject.GetComponentInChildren<GravityCircleScript>().applyGravity)
+                    {
+                        Vector2 force = getGravityVector(planet, transform.position);
+                        transform.position += new Vector3(force.x, force.y, 0);
+                    }
+                }
+
+                else
+                {
+                    Vector2 force = getGravityVector(planet, transform.position);
+                    transform.position += new Vector3(force.x, force.y, 0);
+                }
             }
 
             position += trajVel;
@@ -154,8 +168,22 @@ public class Player : MonoBehaviour
         prevPostition = transform.position;
         for (int i = 0; i < planets.Count; i++)
         {
-            Vector2 force = getGravityVector(planets[i], transform.position);
-            transform.position += new Vector3 (force.x, force.y, 0);
+            Planet planet = planets[i];
+            GravityCircleScript gravityCircle = planet.gameObject.GetComponentInChildren<GravityCircleScript>();
+            if (gravityCircle != null)
+            {
+                if (planet.gameObject.GetComponentInChildren<GravityCircleScript>().applyGravity)
+                {
+                    Vector2 force = getGravityVector(planet, transform.position);
+                    transform.position += new Vector3(force.x, force.y, 0);
+                }
+            }
+
+            else 
+            {
+                Vector2 force = getGravityVector(planet, transform.position);
+                transform.position += new Vector3(force.x, force.y, 0);
+            }
         }
 
         transform.position += forwardVel;
