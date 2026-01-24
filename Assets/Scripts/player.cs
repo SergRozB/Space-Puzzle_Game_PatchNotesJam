@@ -41,6 +41,10 @@ public class Player : MonoBehaviour
     {
         planets = allPlanetsParent.GetComponentsInChildren<Planet>().ToList();
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
+        for (int i = 0; i < maxTrajectoryPoints; i++) {
+            GameObject trajObject = Instantiate(trajectoryPosition, new Vector3(0,0,0), transform.rotation);
+            trajObjects.Add(trajObject);
+        }
     }
 
     void Start()
@@ -82,10 +86,6 @@ public class Player : MonoBehaviour
 
                 } else {               
                     if (mouse.position.ReadValue() != prevMousePos) {
-                        foreach(GameObject obj in trajObjects) {
-                            Destroy(obj);
-                        }
-
                         updateTrajectory();
                     }
                 }
@@ -131,21 +131,13 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < maxTrajectoryPoints; i++) {
             prevPostition = position;
-
+            GameObject currentTrajObject = trajObjects[i];
             for (int j = 0; j < planets.Count; j++)
             {
                 Planet planet = planets[j];
-                GameObject currentTrajObject = trajObjects[i];
-                if (gravityCircle != null)
-                {
-                    if (planet.gameObject.GetComponentInChildren<GravityCircleScript>().applyGravity)
-                    {
-                        Vector2 force = getGravityVector(planet, transform.position);
-                        transform.position += new Vector3(force.x, force.y, 0);
-                    }
-                }
-
-                else
+                
+                TrajectoryObjectScript trajScript = currentTrajObject.GetComponent<TrajectoryObjectScript>();
+                if (trajScript.applyGravity)
                 {
                     Vector2 force = getGravityVector(planet, transform.position);
                     transform.position += new Vector3(force.x, force.y, 0);
@@ -154,12 +146,8 @@ public class Player : MonoBehaviour
 
             position += trajVel;
             trajVel = getVel(prevPostition, position) * friction;
-
-            if (i % 1 == 0)
-            {
-                GameObject trajObject = Instantiate(trajectoryPosition, position, transform.rotation);
-                trajObjects.Add(trajObject);
-            }
+            currentTrajObject.transform.position = position;
+            currentTrajObject.transform.rotation = transform.rotation;
         } 
     }
 
