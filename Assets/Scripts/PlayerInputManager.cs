@@ -56,10 +56,8 @@ public class PlayerInputManager : MonoBehaviour
         for (int i = 0; i < inventorySize; i++)
         {
 
-            Vector3 slotPosition = leftInventoryTransform.gameObject.GetComponent<RectTransform>().position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
-            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, Vector3.zero, Quaternion.identity, inventorySlotsParent);
-            RectTransform slotRectTransform = inventorySlotGameObjects[i].GetComponent<RectTransform>();
-            slotRectTransform.position = slotPosition;
+            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
+            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventorySlotsParent);
             UnityEngine.UI.Image slotImage = inventorySlotGameObjects[i].GetComponent<UnityEngine.UI.Image>();
             slotImage.sprite = noItemInSlotSprite;
             slotImage.rectTransform.localScale = new Vector3(itemSpriteScale, itemSpriteScale, 0);
