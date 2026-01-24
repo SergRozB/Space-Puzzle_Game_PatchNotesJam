@@ -7,7 +7,6 @@ public class ItemBox : MonoBehaviour
 {
     [SerializeField] private Item item;
     [SerializeField] private int amount;
-    public bool wasPickedUp = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public ItemBox(Item item, int amount) 

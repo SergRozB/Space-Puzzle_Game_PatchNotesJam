@@ -7,6 +7,7 @@ public class TrajectoryObjectScript : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("GravCircle"))
         {
+            Debug.Log("Entered Gravity Circle");
             applyGravity = true;
         }
     }
@@ -15,6 +16,7 @@ public class TrajectoryObjectScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("GravCircle"))
         {
+            Debug.Log("Entered Gravity Circle");
             applyGravity = false;
         }
     }
