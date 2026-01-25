@@ -22,7 +22,8 @@ public class Goal : MonoBehaviour
         if (!goalReached && mainPlayerScript.fired)
         {
             float startTime = mainPlayerScript.startTime;
-            timeText.text = "Time Elapsed: " + (Time.time - startTime).ToString("F2");
+            float currentTime = mainPlayerScript.currentTime;
+            timeText.text = "Time Elapsed: " + (currentTime - startTime).ToString("F2");
         }
     }
 

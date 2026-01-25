@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     private bool userChangeSlider = true;
     [SerializeField] private int maxTrajectoryPoints = 10;
     public float startTime = 0;
+    public float currentTime = 0;
 
 
     void Awake()
@@ -73,10 +74,16 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (!paused)
+        {
+            currentTime += Time.deltaTime;
+        }
+
         if (mouse.leftButton.wasPressedThisFrame)
         {    
             fireRequest = true;
         }
+
         if (mouse.rightButton.wasPressedThisFrame)
         {
             var lines = File.ReadLines(filePath).Take((int)slider.value + 1).ToList();
@@ -245,6 +252,8 @@ public class Player : MonoBehaviour
                 planet.name + ",";
             }
 
+            outLine += currentTime;
+
             writer.WriteLine(outLine);
             slider.maxValue += 1;
             userChangeSlider = false;
@@ -300,6 +309,8 @@ public class Player : MonoBehaviour
                 planets.Add(planet);
             }
         }
+
+        currentTime = stringToFloat(frameInfo[csvIndex + 1 + int.Parse(frameInfo[csvIndex]) * 6]);
     }
 
     float stringToFloat(string value)
