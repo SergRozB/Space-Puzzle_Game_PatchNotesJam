@@ -117,9 +117,7 @@ public class Player : MonoBehaviour
             } else {
                 updatePlayer();
             }
-        } else {
-            loadPosition(File.ReadLines(filePath).Skip(14).Take(1).First());
-        }
+        } 
         prevMousePos = mousePos;
     }
     void sliderValueChanged()
