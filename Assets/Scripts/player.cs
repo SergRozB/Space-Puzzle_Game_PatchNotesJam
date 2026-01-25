@@ -1,15 +1,17 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
-using Unity.Mathematics;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
-
+[RequireComponent(typeof(UnityEngine.UI.Slider))]
 public class Player : MonoBehaviour
 {
     bool inProgress = true;
@@ -18,6 +20,9 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject trajectoryPosition;
     [SerializeField] private GameObject itemboxObj;
     [SerializeField] private GameObject itemObj;
+    [SerializeField] private GameObject sliderObj;
+    [SerializeField] private Transform canvas;
+    private UnityEngine.UI.Slider slider;
     [SerializeField] private const int MAXTRAJECTORY = 50;
     private List<GameObject> inventory = new List<GameObject>(){};
     public bool fired = false;
@@ -33,10 +38,12 @@ public class Player : MonoBehaviour
     public List<ItemBox> itemBoxes = new List<ItemBox>{};
     [SerializeField] public float projectionVel = 0.5f;
     private bool fireRequest = false;
-    private bool loadRequest = false;
+    private bool paused = false;
     private string filePath;
+    private bool userChangeSlider = true;
     [SerializeField] private int maxTrajectoryPoints = 10;
     public float startTime = 0;
+
 
     void Awake()
     {
@@ -46,6 +53,17 @@ public class Player : MonoBehaviour
             GameObject trajObject = Instantiate(trajectoryPosition, new Vector3(0,0,0), transform.rotation);
             trajObjects.Add(trajObject);
         }
+
+        GameObject s = Instantiate(sliderObj, new Vector3(0, 0, 0), transform.rotation, canvas);
+        slider = s.GetComponent<UnityEngine.UI.Slider>();
+        RectTransform sliderRect = slider.GetComponent<RectTransform>();
+        sliderRect.anchoredPosition = new Vector3(0, 80, 0);
+        sliderRect.sizeDelta = new Vector3(400f, 20f, 0f);
+        slider.wholeNumbers = true;
+        slider.minValue = 0;
+        slider.maxValue = 0;
+        slider.value = 0;
+        slider.onValueChanged.AddListener(delegate { sliderValueChanged(); });
     }
 
     void Start()
@@ -61,7 +79,11 @@ public class Player : MonoBehaviour
         }
         if (mouse.rightButton.wasPressedThisFrame)
         {
-            loadRequest = true;
+            var lines = File.ReadLines(filePath).Take((int)slider.value + 1).ToList();
+            File.WriteAllLines(filePath, lines);
+            slider.maxValue = slider.value + 1;
+
+            paused = false;
         }
         RotateToVelocity();
     }
@@ -69,7 +91,7 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         mousePos = mouse.position.ReadValue();
-        if (!loadRequest) {
+        if (!paused) {
             if (!fired)
             {   
                 if (fireRequest)
@@ -96,10 +118,17 @@ public class Player : MonoBehaviour
                 updatePlayer();
             }
         } else {
-            loadRequest = false;
             loadPosition(File.ReadLines(filePath).Skip(14).Take(1).First());
         }
         prevMousePos = mousePos;
+    }
+    void sliderValueChanged()
+    {
+        if (userChangeSlider)
+        {
+            loadPosition(File.ReadLines(filePath).Skip((int)slider.value - 1).Take(1).First());
+            paused = true;
+        }
     }
 
     private void RotateToVelocity() 
@@ -219,6 +248,10 @@ public class Player : MonoBehaviour
             }
 
             writer.WriteLine(outLine);
+            slider.maxValue += 1;
+            userChangeSlider = false;
+            slider.value = slider.maxValue;
+            userChangeSlider = true;
         }
     }
 
