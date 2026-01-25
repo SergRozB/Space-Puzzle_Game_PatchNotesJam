@@ -1,3 +1,4 @@
+using NUnit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +31,8 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private GameObject selectedItem;
     [SerializeField] private float itemSpriteScale = 5f;
     public List<Vector3> itemBoxPositions = new List<Vector3>();
+    [SerializeField] private GameObject inventoryImage;
+    [SerializeField] private float yChange;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -52,11 +55,10 @@ public class PlayerInputManager : MonoBehaviour
         float inventorySlotWidth = inventorySlotPrefab.transform.localScale.x * 100f;
         float distanceBetween = (xDifference - (inventorySideCushion*2) - inventorySlotWidth) / (inventorySize-1);
         float startingCushion = inventorySideCushion + (inventorySlotWidth/2);
-        float yChange = 85f;
         for (int i = 0; i < inventorySize; i++)
         {
-
-            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion+distanceBetween * (i), yChange, 0);
+            float yLevel = inventoryImage.GetComponent<RectTransform>().position.y + yChange;
+            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion + distanceBetween * (i), yLevel, 0);
             inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventorySlotsParent);
             UnityEngine.UI.Image slotImage = inventorySlotGameObjects[i].GetComponent<UnityEngine.UI.Image>();
             slotImage.sprite = noItemInSlotSprite;

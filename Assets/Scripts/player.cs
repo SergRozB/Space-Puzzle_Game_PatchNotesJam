@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (!paused)
+        if (!paused && fired)
         {
             currentTime += Time.deltaTime;
         }
