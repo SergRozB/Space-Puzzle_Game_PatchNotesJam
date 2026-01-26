@@ -6,20 +6,20 @@ using System;
 
 public class Item : MonoBehaviour
 {
-    [SerializeField] private string name;
+    [SerializeField] private string attributeName;
 
     public GameObject getGameObject()
     {
         return this.gameObject;
     }
     
-    public string getName()
+    public string getAttributeName()
     {
-        return this.name;
+        return this.attributeName;
     }
 
     public void setName(string name)
     {
-        this.name = name;
+        this.attributeName = name;
     }
 }

@@ -151,4 +151,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbf2f74e264cf494b8dc4a10c10aa94d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  name: 
+  attributeName: world ender

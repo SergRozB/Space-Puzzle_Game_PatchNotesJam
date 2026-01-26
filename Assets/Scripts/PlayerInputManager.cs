@@ -28,7 +28,7 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private Sprite noItemInSlotSprite;
     [SerializeField] private int selectedSlot = 0;
     private bool changedSlot = false;
-    [SerializeField] private GameObject selectedItem;
+    [SerializeField] public GameObject selectedItem;
     [SerializeField] private float itemSpriteScale = 5f;
     public List<Vector3> itemBoxPositions = new List<Vector3>();
     [SerializeField] private GameObject inventoryImage;

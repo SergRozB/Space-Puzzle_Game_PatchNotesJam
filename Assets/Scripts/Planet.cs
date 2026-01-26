@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -63,5 +64,9 @@ public class Planet : MonoBehaviour
     public void setMass(float mass)
     {
         this.mass = mass;
+    }
+
+    public bool onMouseDown() {
+        return true;
     }
 }

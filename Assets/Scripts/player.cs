@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -44,10 +45,13 @@ public class Player : MonoBehaviour
     [SerializeField] private int maxTrajectoryPoints = 10;
     public float startTime = 0;
     public float currentTime = 0;
+    public Planet planetToDestroy;
 
 
     void Awake()
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
         planets = allPlanetsParent.GetComponentsInChildren<Planet>().ToList();
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
         for(int i = 0; i < maxTrajectoryPoints; i++) {
@@ -81,7 +85,19 @@ public class Player : MonoBehaviour
 
         if (mouse.leftButton.wasPressedThisFrame)
         {    
-            fireRequest = true;
+            bool complete = false;
+            if (gameObject.GetComponent<PlayerInputManager>().selectedItem != null) {
+                Item currentInventoryItem = gameObject.GetComponent<PlayerInputManager>().selectedItem.GetComponent<Item>();
+                if (currentInventoryItem.getAttributeName() == "world ender")
+                {
+                    complete = useItem("world ender");
+                }
+            }
+
+            if (!fired & !complete)
+            {
+                fireRequest = true;
+            }
         }
 
         if (mouse.rightButton.wasPressedThisFrame)
@@ -135,7 +151,6 @@ public class Player : MonoBehaviour
             paused = true;
         }
     }
-
     private void RotateToVelocity() 
     {
         float angleToRotate = Vector3.Angle(Vector3.right, forwardVel);
@@ -221,7 +236,6 @@ public class Player : MonoBehaviour
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.amount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
         string outLine = "";
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
-        float counter = 0f;
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             outLine += transform.position.x.ToString() + "," + 
@@ -236,7 +250,7 @@ public class Player : MonoBehaviour
             {
                 outLine += box.getX().ToString() + "," + 
                 box.getY().ToString() + "," + 
-                box.getItem().getName() + "," +
+                box.getItem().getAttributeName() + "," +
                 box.getItemAmount().ToString() + ",";
             }
 
@@ -262,6 +276,35 @@ public class Player : MonoBehaviour
         }
     }
 
+    bool useItem(string itemName)
+    {
+        if (itemName == "world ender")
+        {
+            Debug.Log("hi");
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Debug.Log("ray wooo");
+                if (hit.collider.gameObject.GetComponent<Planet>() != null) {
+                    Destroy(hit.collider.gameObject);
+                    return true;       
+                } else {
+                    return false;
+                }
+            }
+                return false;
+
+        } else if (itemName == "double boost") {
+            forwardVel += getVel(transform.position, mouseToWorld()) * projectionVel;
+            return true;
+
+        } else if (itemName == "emergency brakes") {
+            forwardVel *= 0.1f;
+            return true;
+        } else {
+            return false;
+        }
+    }
     void loadPosition(string frame) 
     {
         // transform.x, transform.y, prevPosition.x, prevPosition.y, forwardVel.x, forwardVel.y, friction, i1amount, i2amount... i9amount, itemBoxAmount, itemBox1.x, itemBox1.y, itemBox1.item, itemBox1.itemamount..., objAmount, obj1.x, obj1.y, obj1.vel.x, obj1.vel.y, obj.mass...
