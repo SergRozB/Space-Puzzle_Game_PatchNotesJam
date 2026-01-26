@@ -21,9 +21,6 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         mainCamera = GetComponent<Camera>();
-        ppc = GetComponent<PixelPerfectCamera>();
-        startResX = ppc.refResolutionX;
-        startResY = ppc.refResolutionY;
         startOrthographicSize = mainCamera.orthographicSize;
     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8988757352326558408}
   - component: {fileID: 7243165303899300610}
   - component: {fileID: 4842036616049785017}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GravityCircle
   m_TagString: GravCircle
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 7723161709387596305}
   - component: {fileID: 3798842408250538230}
   - component: {fileID: 2117978773640155304}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 'PlanetF48x48 '
   m_TagString: Planet
   m_Icon: {fileID: 0}
@@ -172,7 +172,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -21.256985, y: -15.662982, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2447457920390557128}

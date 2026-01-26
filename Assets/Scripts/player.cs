@@ -44,10 +44,14 @@ public class Player : MonoBehaviour
     [SerializeField] private int maxTrajectoryPoints = 10;
     public float startTime = 0;
     public float currentTime = 0;
-
+    private List<GameObject> planetsOrbiting = new List<GameObject>();
+    private Animator animator;
+    [SerializeField] private GameObject deadScreen;
+    [SerializeField] private LayerMask trajCollisionMask;
 
     void Awake()
     {
+        animator = GetComponent<Animator>();
         planets = allPlanetsParent.GetComponentsInChildren<Planet>().ToList();
         filePath = Path.Combine(Application.persistentDataPath, "history.csv");
         for(int i = 0; i < maxTrajectoryPoints; i++) {
@@ -58,7 +62,7 @@ public class Player : MonoBehaviour
         GameObject s = Instantiate(sliderObj, new Vector3(0, 0, 0), transform.rotation, canvas);
         slider = s.GetComponent<UnityEngine.UI.Slider>();
         RectTransform sliderRect = slider.GetComponent<RectTransform>();
-        sliderRect.anchoredPosition = new Vector3(0, 80, 0);
+        sliderRect.anchoredPosition = new Vector3(0, 120, 0);
         sliderRect.sizeDelta = new Vector3(400f, 20f, 0f);
         slider.wholeNumbers = true;
         slider.minValue = 0;
@@ -92,9 +96,15 @@ public class Player : MonoBehaviour
 
             paused = false;
         }
+
+        if (gameObject.GetComponent<PlayerInputManager>().pauseInGameTime)
+        {
+            paused = !paused;
+        }
+
         RotateToVelocity();
     }
-    // Update is called once per frame
+
     void FixedUpdate()
     {
         mousePos = mouse.position.ReadValue();
@@ -161,30 +171,58 @@ public class Player : MonoBehaviour
     void updateTrajectory()
     {
         Vector3 position = transform.position;
-        Vector3 trajVel = forwardVel;
         Vector3 mouseWorldPos = mouseToWorld();
 
         forwardVel = getVel(transform.position, mouseWorldPos) * projectionVel;
+        Vector3 trajVel = forwardVel;
+        bool pathEndedEarly = false;
 
         for (int i = 0; i < maxTrajectoryPoints; i++) {
             prevPostition = position;
             GameObject currentTrajObject = trajObjects[i];
-            for (int j = 0; j < planets.Count; j++)
+            TrajectoryObjectScript trajScript = currentTrajObject.GetComponent<TrajectoryObjectScript>();
+            BoxCollider2D markerCollider = currentTrajObject.GetComponent<BoxCollider2D>();
+
+            Vector3 nextPos = position + trajVel;
+
+            float angleToRotate = Vector3.Angle(Vector3.right, trajVel);
+            if (trajVel.y < 0)
             {
-                Planet planet = planets[j];
-                
-                TrajectoryObjectScript trajScript = currentTrajObject.GetComponent<TrajectoryObjectScript>();
-                if (trajScript.applyGravity)
+                angleToRotate = -angleToRotate;
+            }
+            currentTrajObject.transform.localEulerAngles = new Vector3(0, 0, angleToRotate);
+
+            if (Physics2D.OverlapBox((Vector2)nextPos, markerCollider.size, angleToRotate, trajCollisionMask))
+            {
+                pathEndedEarly = true;
+                Debug.Log($"Trajectory ended early at point {i} (physics overlap)");
+            }
+     
+            if (!pathEndedEarly)
+            {
+                currentTrajObject.SetActive(true);
+
+                for (int j = 0; j < planets.Count; j++)
                 {
-                    Vector2 force = getGravityVector(planet, position);
-                    position += new Vector3(force.x, force.y, 0);
+                    Planet planet = planets[j];
+
+
+                    if (trajScript.planetsOrbiting.Contains(planet.gameObject))
+                    {
+                        Vector2 force = getGravityVector(planet, position);
+                        position += new Vector3(force.x, force.y, 0);
+                    }
                 }
+
+                position += trajVel;
+                trajVel = getVel(prevPostition, position) * friction;
+                currentTrajObject.transform.position = position;
             }
 
-            position += trajVel;
-            trajVel = getVel(prevPostition, position) * friction;
-            currentTrajObject.transform.position = position;
-            currentTrajObject.transform.rotation = transform.rotation;
+            else 
+            {
+                currentTrajObject.SetActive(false);
+            }
         } 
     }
 
@@ -194,17 +232,8 @@ public class Player : MonoBehaviour
         for (int i = 0; i < planets.Count; i++)
         {
             Planet planet = planets[i];
-            GravityCircleScript gravityCircle = planet.gameObject.GetComponentInChildren<GravityCircleScript>();
-            if (gravityCircle != null)
-            {
-                if (planet.gameObject.GetComponentInChildren<GravityCircleScript>().applyGravity)
-                {
-                    Vector2 force = getGravityVector(planet, transform.position);
-                    transform.position += new Vector3(force.x, force.y, 0);
-                }
-            }
 
-            else 
+            if (planetsOrbiting.Contains(planet.gameObject))
             {
                 Vector2 force = getGravityVector(planet, transform.position);
                 transform.position += new Vector3(force.x, force.y, 0);
@@ -299,7 +328,6 @@ public class Player : MonoBehaviour
         if (int.Parse(frameInfo[csvIndex]) != 0) {
             for (int i = 0; i < int.Parse(frameInfo[csvIndex]); i++)
             {
-                Debug.Log("planet prefab name: " + frameInfo[csvIndex + 6 + 6*i]);
                 GameObject prefabToUse = PlanetPrefabStorer.planetPrefabDictionary[frameInfo[csvIndex + 6 + 6*i]];
                 GameObject gamePlanet = Instantiate(prefabToUse, new Vector3(stringToFloat(frameInfo[csvIndex + 1 + 6*i]), stringToFloat(frameInfo[csvIndex + 2 + 6*i]), 0), Quaternion.identity, allPlanetsParent.transform);
                 Planet planet = gamePlanet.AddComponent<Planet>();
@@ -367,10 +395,28 @@ public class Player : MonoBehaviour
             inventory.Add(collision.gameObject);
         }
 
-        if (collision.gameObject.tag == "goal")
+        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Planet"))
         {
-            Debug.Log("you win");
-            inProgress = false;
+            animator.SetBool("collided", true);
+            deadScreen.SetActive(true);
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("GravCircle"))
+        {
+            planetsOrbiting.Add(collision.gameObject.transform.parent.gameObject);
+
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("GravCircle"))
+        {
+            planetsOrbiting.Remove(collision.gameObject.transform.parent.gameObject);
         }
     }
 }

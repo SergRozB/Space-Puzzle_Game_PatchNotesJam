@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5270900466368644465}
   - component: {fileID: 5243969885920374206}
   - component: {fileID: -6309992599271628819}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 'PlanetB48x48 '
   m_TagString: Planet
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 3050681459057480533}
   - component: {fileID: 6240325828349926381}
   - component: {fileID: 2496987159280422125}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'GravityCircle '
   m_TagString: GravCircle
   m_Icon: {fileID: 0}

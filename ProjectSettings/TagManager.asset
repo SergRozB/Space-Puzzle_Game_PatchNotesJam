@@ -9,6 +9,8 @@ TagManager:
   - Item
   - Planet
   - ItemBox
+  - GravCircle
+  - Obstacle
   layers:
   - Default
   - TransparentFX
@@ -16,10 +18,10 @@ TagManager:
   - Item
   - Water
   - UI
-  - TV
-  - 
-  - 
-  - 
+  - GravityCircle
+  - Player
+  - Trajectory
+  - CanCollideWith
   - 
   - 
   - 

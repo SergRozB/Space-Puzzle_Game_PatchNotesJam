@@ -13,7 +13,9 @@ public class PlayerInputManager : MonoBehaviour
     public InputActionReference pause;
     public InputActionReference control;
     [SerializeField] private InputActionReference scroll;
+    [SerializeField] private InputActionReference pauseTime;
     public bool isPaused = false;
+    public bool pauseInGameTime = false;
     [SerializeField] private GameObject[] inventory;
     [SerializeField] private bool isInventoryFull = false;
     [SerializeField] private int inventorySize = 8;
@@ -21,7 +23,6 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private GameObject inventorySlotPrefab;
     [SerializeField] private Transform leftInventoryTransform;
     [SerializeField] private Transform rightInventoryTransform;
-    [SerializeField] private Transform inventorySlotsParent;
     private GameObject[] inventorySlotGameObjects;
     private float inventorySideCushion = 50f;
     [SerializeField] private Sprite selectedItemSlotSprite;
@@ -46,6 +47,16 @@ public class PlayerInputManager : MonoBehaviour
     void Update()
     {
         isPaused = pause.action.triggered ? !isPaused : isPaused;
+        if(pauseTime.action.triggered) 
+        {
+            pauseInGameTime = true;
+        }
+
+        else 
+        { 
+            pauseInGameTime = false;
+        }
+
         SelectInventorySlot();
     }
 
@@ -57,9 +68,11 @@ public class PlayerInputManager : MonoBehaviour
         float startingCushion = inventorySideCushion + (inventorySlotWidth/2);
         for (int i = 0; i < inventorySize; i++)
         {
-            float yLevel = inventoryImage.GetComponent<RectTransform>().position.y + yChange;
-            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion + distanceBetween * (i), yLevel, 0);
-            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventorySlotsParent);
+            Vector3 slotPosition = leftInventoryTransform.position + new Vector3(startingCushion + distanceBetween * (i), 0, 0);
+            inventorySlotGameObjects[i] = Instantiate(inventorySlotPrefab, slotPosition, Quaternion.identity, inventoryImage.transform.parent);
+            RectTransform slotRectTransform = inventorySlotGameObjects[i].GetComponent<RectTransform>();
+            float yLevel = inventoryImage.GetComponent<RectTransform>().position.y;
+            slotRectTransform.anchoredPosition = new Vector2(slotRectTransform.anchoredPosition.x, yLevel);
             UnityEngine.UI.Image slotImage = inventorySlotGameObjects[i].GetComponent<UnityEngine.UI.Image>();
             slotImage.sprite = noItemInSlotSprite;
             slotImage.rectTransform.localScale = new Vector3(itemSpriteScale, itemSpriteScale, 0);
@@ -89,7 +102,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             if(i == index) 
             {
-                GameObject itemInInventory = Instantiate(item, inventorySlotGameObjects[i].transform.position, Quaternion.identity, inventorySlotsParent);
+                GameObject itemInInventory = Instantiate(item, inventorySlotGameObjects[i].transform.position, Quaternion.identity, inventoryImage.transform.parent);
                 itemInInventory.transform.localScale = new Vector3(50f, 50f, 0);
                 itemInInventory.AddComponent<UnityEngine.UI.Image>();
                 UnityEngine.UI.Image image = itemInInventory.GetComponent<UnityEngine.UI.Image>();

@@ -52,15 +52,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause1",
-                    "type": "Button",
-                    "id": "442f4656-90bf-47b4-98bc-d4b2d8335a97",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "InventorySelect",
                     "type": "Button",
                     "id": "69e2c103-eacd-4ee8-be2e-99012618f97b",
@@ -82,6 +73,15 @@
                     "name": "Ctrl",
                     "type": "Button",
                     "id": "6db377ce-8597-413d-a8df-0918ed0e0c36",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PauseTime",
+                    "type": "Button",
+                    "id": "f11615ab-f2b5-42e8-b66a-beb186a93fb8",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -409,17 +409,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "5c4a8153-8644-42f3-a384-39d008b99f25",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Pause1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "InventorySelectScrollwheel",
                     "id": "44b31c05-8c2a-473c-bcb9-e345a3f1153e",
                     "path": "1DAxis",
@@ -647,6 +636,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Ctrl",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe479f4d-b567-4a2c-998f-31d9b01c06b7",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PauseTime",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
